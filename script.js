@@ -11,25 +11,33 @@ function loadImage(image) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.src = image.url;
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Failed to load image's URL: ${image.url}`));
+    img.onload = () => {
+      console.log(`Image loaded: ${image.url}`);
+      resolve(img);
+    };
+    img.onerror = () => {
+      console.error(`Failed to load image: ${image.url}`);
+      reject(new Error(`Failed to load image's URL: ${image.url}`));
+    };
   });
 }
 
 btn.addEventListener("click", () => {
+  console.log("Button clicked");
   const imagePromises = images.map(loadImage);
 
   Promise.all(imagePromises)
     .then(loadedImages => {
-      output.innerHTML = '';
+      output.innerHTML = ''; // Clear previous content
       loadedImages.forEach(img => {
+        console.log(`Appending image: ${img.src}`);
         output.appendChild(img);
       });
     })
     .catch(error => {
+      console.error(error.message);
       output.innerHTML = `<p style="color: red;">${error.message}</p>`;
     });
 });
 
-];
 
